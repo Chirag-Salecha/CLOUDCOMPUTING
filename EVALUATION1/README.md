@@ -229,21 +229,23 @@ Results are stored in the results directory.
 
 ### 11.4 Graphs
 
+### 11.4 Graphs
+
 **Concurrent Requests vs Average Response Time**
 
-![Response Time](results/response_time.png)
+![Response Time](workload/graphs/response_time.png)
 
 **Concurrent Requests vs Throughput**
 
-![Throughput](results/throughput.png)
+![Throughput](workload/graphs/throughput.png)
 
 **Concurrent Requests vs CPU Utilization**
 
-![CPU](results/cpu.png)
+![CPU](workload/graphs/cpu.png)
 
 **Concurrent Requests vs Memory Utilization**
 
-![Memory](results/memory.png)
+![Memory](workload/graphs/memory.png)
 
 ### 11.5 Analysis
 
