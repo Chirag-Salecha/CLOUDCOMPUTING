@@ -5,6 +5,13 @@
 **Author:** Chirag Salecha
 
 ---
+## Team Members
+
+| Name |
+|---|
+| **Chirag Salecha** |
+| **Achyuth RH** |
+| **Adarsh MR** |
 
 ## 1. Aim
 To develop a microservice-based application with three independent services, containerize and deploy them using Docker and Docker Compose, establish inter-service communication, generate varying workloads, monitor resource utilization, and analyze application performance.
