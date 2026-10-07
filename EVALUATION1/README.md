@@ -231,19 +231,19 @@ Results are stored in the results directory.
 
 **Concurrent Requests vs Average Response Time**
 
-![Response Time](./workload/graphs/response_time.png)
+![Response Time](./MICROSERVICES/workload/graphs/response_time.png)
 
 **Concurrent Requests vs Throughput**
 
-![Throughput](./workload/graphs/throughput.png)
+![Throughput](./MICROSERVICES/workload/graphs/throughput.png)
 
 **Concurrent Requests vs CPU Utilization**
 
-![CPU Utilization](./workload/graphs/cpu_utilization.png)
+![CPU Utilization](./MICROSERVICES/workload/graphs/cpu_utilization.png)
 
 **Concurrent Requests vs Memory Utilization**
 
-![Memory Utilization](./workload/graphs/memory_utilization.png)
+![Memory Utilization](./MICROSERVICES/workload/graphs/memory_utilization.png)
 
 
 ### 11.5 Analysis
