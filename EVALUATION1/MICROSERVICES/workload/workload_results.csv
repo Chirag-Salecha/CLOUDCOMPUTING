@@ -1,0 +1,6 @@
+Workload,Concurrency,Response Time (ms),Throughput (req/s),Failed Requests,Student CPU,Student Memory,Attendance CPU,Attendance Memory,Performance CPU,Performance Memory
+W1,1,22.23,44.83,0,0.01%,26.91MiB / 7.605GiB,0.01%,27.64MiB / 7.605GiB,0.01%,21.79MiB / 7.605GiB
+W2,2,15.97,123.39,0,0.02%,26.81MiB / 7.605GiB,0.01%,27.57MiB / 7.605GiB,0.01%,21.7MiB / 7.605GiB
+W3,4,16.12,243.64,0,0.01%,26.42MiB / 7.605GiB,0.01%,27.62MiB / 7.605GiB,0.02%,21.67MiB / 7.605GiB
+W4,8,26.81,289.25,0,0.02%,26.54MiB / 7.605GiB,0.01%,27.57MiB / 7.605GiB,0.01%,21.66MiB / 7.605GiB
+W5,16,58.02,257.7,0,0.01%,26.93MiB / 7.605GiB,0.01%,27.54MiB / 7.605GiB,0.01%,21.85MiB / 7.605GiB

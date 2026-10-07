@@ -1,0 +1,29 @@
+services:
+
+  student-service:
+    build: ./student-service
+    container_name: student-service
+    ports:
+      - "5001:5000"
+    networks:
+      - app-network
+
+  attendance-service:
+    build: ./attendance-service
+    container_name: attendance-service
+    ports:
+      - "5002:5000"
+    networks:
+      - app-network
+
+  performance-service:
+    build: ./performance-service
+    container_name: performance-service
+    ports:
+      - "5003:5000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
