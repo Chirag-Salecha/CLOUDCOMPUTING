@@ -227,25 +227,24 @@ Results are stored in the results directory.
 | W4 | 8 | Recorded from test | Recorded from test | Recorded from test |
 | W5 | 16 | Recorded from test | Recorded from test | Recorded from test |
 
-### 11.4 Graphs
-
-### 11.4 Graphs
+## 11.4 Graphs
 
 **Concurrent Requests vs Average Response Time**
 
-![Response Time](workload/graphs/response_time.png)
+![Response Time](./workload/graphs/response_time.png)
 
 **Concurrent Requests vs Throughput**
 
-![Throughput](workload/graphs/throughput.png)
+![Throughput](./workload/graphs/throughput.png)
 
 **Concurrent Requests vs CPU Utilization**
 
-![CPU](workload/graphs/cpu.png)
+![CPU Utilization](./workload/graphs/cpu_utilization.png)
 
 **Concurrent Requests vs Memory Utilization**
 
-![Memory](workload/graphs/memory.png)
+![Memory Utilization](./workload/graphs/memory_utilization.png)
+
 
 ### 11.5 Analysis
 
