@@ -1,0 +1,6 @@
+Workload,Total Requests,Concurrency,Response Time (ms),Throughput (req/s),Failed Requests,Student Avg CPU (%),Student Peak CPU (%),Student Avg Memory (MiB),Student Peak Memory (MiB),Attendance Avg CPU (%),Attendance Peak CPU (%),Attendance Avg Memory (MiB),Attendance Peak Memory (MiB),Performance Avg CPU (%),Performance Peak CPU (%),Performance Avg Memory (MiB),Performance Peak Memory (MiB)
+W1,100,16,69.36,217.15,0,53.41,53.41,27.4,27.4,0.01,0.01,21.89,21.89,0.01,0.01,21.84,21.84
+W2,1000,16,53.62,294.83,0,87.44,135.01,28.66,29.35,21.26,32.97,22.05,22.2,21.59,33.68,21.99,22.18
+W3,2000,16,52.99,300.41,0,101.9,136.54,29.87,30.81,24.7,33.21,22.17,22.52,24.48,33.61,22.39,22.79
+W4,3000,16,55.35,287.93,0,112.82,136.8,30.34,31.04,27.27,34.05,22.09,22.22,27.26,33.08,22.01,22.16
+W5,5000,16,55.41,287.8,0,123.3,136.35,31.47,32.1,29.71,33.07,22.21,22.52,30.02,33.35,22.11,22.57
