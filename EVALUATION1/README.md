@@ -33,6 +33,8 @@ To develop a microservice-based application with three independent services, con
 - Docker Compose
 - Python 3.x
 - Docker containers connected through a common Docker network
+- Fixed concurrency: 16
+- Workload levels: 100, 1000, 2000, 3000, and 5000 requests
 
 ## 4. Architecture
 
@@ -90,8 +92,14 @@ All three services run as separate containers on one Docker network. The student
     |-- attendance-service/    (app.py, requirements.txt, Dockerfile)
     |-- performance-service/   (app.py, requirements.txt, Dockerfile)
     |-- docker-compose.yml
-    |-- load_test.py
-    |-- results/               (results.csv, graphs)
+    |-- workload/
+    |   |-- load_test.py
+    |   |-- workload_results.csv
+    |   `-- graphs/
+    |       |-- response_time.png
+    |       |-- throughput.png
+    |       |-- cpu_utilization.png
+    |       `-- memory_utilization.png
     |-- README.md
 
 ---
@@ -185,89 +193,153 @@ Check performance-service logs:
 2. The selected API touches all three services.
 3. Load generator: custom Python script `load_test.py`.
 4. Python `requests` and `threading` are used for generating concurrent requests.
-5. Different workload levels are tested.
-6. Average response time and throughput are recorded.
-7. Successful and failed requests are counted.
-8. All three containers are monitored using `docker stats`.
-9. CPU and memory utilization are observed for every service.
-10. Results are stored for further analysis.
+5. A fixed concurrency of 16 is used for all workload levels.
+6. Five workload levels are tested: 100, 1000, 2000, 3000, and 5000 requests.
+7. Average response time and throughput are recorded.
+8. Successful and failed requests are counted.
+9. All three containers are monitored using `docker stats`.
+10. CPU and memory utilization are observed for every service.
+11. Resource monitoring is performed while the workload is active.
+12. Results are stored for further analysis.
+13. A total of 11,100 requests are executed across all five workload levels.
 
 Run the workload test:
 
+    cd workload
     python load_test.py
 
-Monitor the containers in another PowerShell terminal:
+Monitor the containers:
 
     docker stats
 
-Results are stored in the results directory.
+The monitoring interval is 0.1 seconds.
+
+Results are stored in the workload directory:
+
+    workload/workload_results.csv
+
+Graphs are stored in:
+
+    workload/graphs/
 
 ## 11. Checkpoint 5 - Results and Analysis
 
 ### 11.1 Observation Table
 
-| Workload | Concurrency | Avg Response Time (ms) | Throughput (req/s) | Failed |
-|---|---|---|---|---|
-| W1 | 1 | Recorded from test | Recorded from test | 0 |
-| W2 | 2 | Recorded from test | Recorded from test | 0 |
-| W3 | 4 | Recorded from test | Recorded from test | 0 |
-| W4 | 8 | Recorded from test | Recorded from test | 0 |
-| W5 | 16 | Recorded from test | Recorded from test | 0 |
+All workload tests were executed with a fixed concurrency of 16.
+
+| Workload | Total Requests | Concurrency | Avg Response Time (ms) | Throughput (req/s) | Failed |
+|---|---:|---:|---:|---:|---:|
+| W1 | 100 | 16 | 69.36 | 217.15 | 0 |
+| W2 | 1000 | 16 | 53.62 | 294.83 | 0 |
+| W3 | 2000 | 16 | 52.99 | 300.41 | 0 |
+| W4 | 3000 | 16 | 55.35 | 287.93 | 0 |
+| W5 | 5000 | 16 | 55.41 | 287.80 | 0 |
+
+Total requests executed:
+
+    100 + 1000 + 2000 + 3000 + 5000 = 11100 requests
+
+All 11,100 requests were completed successfully with zero failed requests.
 
 ### 11.2 CPU Utilization (%)
 
-| Workload | Concurrency | student-service | attendance-service | performance-service |
-|---|---|---|---|---|
-| W1 | 1 | Recorded from test | Recorded from test | Recorded from test |
-| W2 | 2 | Recorded from test | Recorded from test | Recorded from test |
-| W3 | 4 | Recorded from test | Recorded from test | Recorded from test |
-| W4 | 8 | Recorded from test | Recorded from test | Recorded from test |
-| W5 | 16 | Recorded from test | Recorded from test | Recorded from test |
+The values below represent the average CPU utilization recorded during each workload.
 
-### 11.3 Memory Utilization (MB)
+| Workload | Total Requests | Concurrency | student-service | attendance-service | performance-service |
+|---|---:|---:|---:|---:|---:|
+| W1 | 100 | 16 | 53.41 | 0.01 | 0.01 |
+| W2 | 1000 | 16 | 87.44 | 21.26 | 21.59 |
+| W3 | 2000 | 16 | 101.90 | 24.70 | 24.48 |
+| W4 | 3000 | 16 | 112.82 | 27.27 | 27.26 |
+| W5 | 5000 | 16 | 123.30 | 29.71 | 30.02 |
 
-| Workload | Concurrency | student-service | attendance-service | performance-service |
-|---|---|---|---|---|
-| W1 | 1 | Recorded from test | Recorded from test | Recorded from test |
-| W2 | 2 | Recorded from test | Recorded from test | Recorded from test |
-| W3 | 4 | Recorded from test | Recorded from test | Recorded from test |
-| W4 | 8 | Recorded from test | Recorded from test | Recorded from test |
-| W5 | 16 | Recorded from test | Recorded from test | Recorded from test |
+Peak CPU utilization recorded:
 
-## 11.4 Graphs
+| Workload | student-service | attendance-service | performance-service |
+|---|---:|---:|---:|
+| W1 | 53.41% | 0.01% | 0.01% |
+| W2 | 135.01% | 32.97% | 33.68% |
+| W3 | 136.54% | 33.21% | 33.61% |
+| W4 | 136.80% | 34.05% | 33.08% |
+| W5 | 136.35% | 33.07% | 33.35% |
 
-**Concurrent Requests vs Average Response Time**
+### 11.3 Memory Utilization (MiB)
+
+The values below represent the average memory utilization recorded during each workload.
+
+| Workload | Total Requests | Concurrency | student-service | attendance-service | performance-service |
+|---|---:|---:|---:|---:|---:|
+| W1 | 100 | 16 | 27.40 | 21.89 | 21.84 |
+| W2 | 1000 | 16 | 28.66 | 22.05 | 21.99 |
+| W3 | 2000 | 16 | 29.87 | 22.17 | 22.39 |
+| W4 | 3000 | 16 | 30.34 | 22.09 | 22.01 |
+| W5 | 5000 | 16 | 31.47 | 22.21 | 22.11 |
+
+Peak memory utilization recorded:
+
+| Workload | student-service | attendance-service | performance-service |
+|---|---:|---:|---:|
+| W1 | 27.40 MiB | 21.89 MiB | 21.84 MiB |
+| W2 | 29.35 MiB | 22.20 MiB | 22.18 MiB |
+| W3 | 30.81 MiB | 22.52 MiB | 22.79 MiB |
+| W4 | 31.04 MiB | 22.22 MiB | 22.16 MiB |
+| W5 | 32.10 MiB | 22.52 MiB | 22.57 MiB |
+
+### 11.4 Graphs
+
+**Total Requests vs Average Response Time**
 
 ![Response Time](./MICROSERVICES/workload/graphs/response_time.png)
 
-**Concurrent Requests vs Throughput**
+**Total Requests vs Throughput**
 
 ![Throughput](./MICROSERVICES/workload/graphs/throughput.png)
 
-**Concurrent Requests vs CPU Utilization**
+**Total Requests vs CPU Utilization**
 
 ![CPU Utilization](./MICROSERVICES/workload/graphs/cpu_utilization.png)
 
-**Concurrent Requests vs Memory Utilization**
+**Total Requests vs Memory Utilization**
 
 ![Memory Utilization](./MICROSERVICES/workload/graphs/memory_utilization.png)
 
 
 ### 11.5 Analysis
 
-1. **Response time:** As the number of concurrent requests increases, the average response time is expected to increase because more requests compete for the available system resources.
-2. **Throughput:** Throughput generally increases as concurrency increases until the application reaches its processing capacity. After saturation, throughput may remain stable or increase only slightly.
-3. **Failures:** Successful and failed requests are recorded at every workload level. A stable application should process the tested requests without failures.
-4. **Resource usage:** CPU utilization can increase with workload because all three services need to process more incoming requests.
-5. **Memory:** Memory utilization is monitored for all three services to determine whether increasing workload causes significant memory growth.
+1. **Response time:** The average response time was 69.36 ms for 100 requests and decreased to 52.99 ms at 2,000 requests. At higher workloads, the response time increased slightly to 55.35 ms and 55.41 ms for 3,000 and 5,000 requests respectively.
+
+2. **Throughput:** Throughput increased from 217.15 req/s at 100 requests to a maximum of 300.41 req/s at 2,000 requests. After reaching this level, throughput stabilized around 288 req/s at 3,000 and 5,000 requests, indicating that the system was approaching its processing capacity.
+
+3. **Failures:** All five workload levels completed successfully with zero failed requests. A total of 11,100 requests were processed without failures.
+
+4. **Resource usage:** CPU utilization increased with workload. The student-service showed the highest CPU utilization because it acts as the entry point and handles the end-to-end request while communicating with the other services.
+
+5. **Memory:** student-service memory utilization increased gradually from 27.40 MiB to 31.47 MiB as workload increased. Attendance-service and performance-service remained relatively stable around 22 MiB.
+
 6. **Service dependency:** student-service is the entry point and communicates with attendance-service and performance-service. Therefore, the performance of the end-to-end request depends on all three services.
-7. **Bottleneck:** The service showing consistently higher CPU utilization or processing time can be considered a potential bottleneck.
-8. **Performance degradation:** Once a service reaches its processing capacity, additional requests may have to wait. This increases response time and can cause throughput to stop increasing.
-9. **Scalability:** Since the services are independently containerized, individual services can be scaled according to their workload.
+
+7. **Bottleneck:** student-service is the primary resource-consuming service in the experiment. Its average CPU utilization increased from 53.41% at 100 requests to 123.30% at 5,000 requests.
+
+8. **Performance degradation:** After the throughput peak of 300.41 req/s at 2,000 requests, throughput decreased slightly to 287.93 req/s at 3,000 requests and 287.80 req/s at 5,000 requests. This indicates that the system is approaching saturation under the fixed concurrency of 16.
+
+9. **Scalability:** Since the services are independently containerized, individual services can be scaled according to their workload. The results show that the current deployment handled all tested workload levels successfully, while student-service became increasingly CPU intensive.
+
+10. **CPU interpretation:** Docker CPU utilization can exceed 100% because the value represents usage relative to a single CPU core. Therefore, the measured 123.30% average CPU utilization for student-service at 5,000 requests represents approximately 1.23 CPU cores of utilization.
+
+11. **Best measured workload:** The 2,000-request workload produced the highest measured throughput of 300.41 req/s and the lowest measured average response time of 52.99 ms among the five workload levels.
 
 ### 11.6 Conclusion
 
-Increasing workload can increase response time while throughput eventually approaches the processing capacity of the application. CPU and memory monitoring helps identify the service that consumes the most resources. The experiment demonstrates how containerized microservices can be monitored and analyzed under varying workloads.
+The workload experiment was successfully completed using five request volumes of 100, 1000, 2000, 3000, and 5000 requests with a fixed concurrency of 16.
+
+The system processed all 11,100 requests successfully with zero failures.
+
+The highest measured throughput was 300.41 req/s at 2,000 requests, while the lowest measured response time was 52.99 ms at the same workload. At 3,000 and 5,000 requests, throughput remained around 288 req/s, showing that the system was approaching a stable processing capacity.
+
+CPU utilization increased with workload, particularly for student-service, while memory usage increased gradually and remained stable for the attendance-service and performance-service.
+
+The experiment demonstrates how containerized microservices can be monitored and analyzed under increasing request volumes and how workload testing can be used to identify resource usage and performance saturation.
 
 ---
 
@@ -292,22 +364,29 @@ The following parameters were observed:
 - Block Input/Output
 - Number of Processes
 
+The resource monitoring was performed at an interval of 0.1 seconds while the workload was active.
+
 The collected information was used to understand the resource consumption of each microservice under different workloads.
+
+The monitoring results showed that student-service consumed the highest CPU resources as the request volume increased, while attendance-service and performance-service maintained comparatively lower CPU and stable memory utilization.
 
 ## 13. Checkpoint 7 - Scalability Analysis
 
-The application was tested with increasing concurrency levels:
+The application was tested with increasing request volumes while maintaining a fixed concurrency level of 16:
 
-    1 -> 2 -> 4 -> 8 -> 16 concurrent requests
+    100 -> 1000 -> 2000 -> 3000 -> 5000 total requests
 
 The purpose of this experiment was to determine:
 
-1. How response time changes with workload.
-2. How throughput changes with workload.
+1. How response time changes with increasing request volume.
+2. How throughput changes with increasing request volume.
 3. How CPU utilization changes.
 4. How memory utilization changes.
 5. Whether any microservice becomes a bottleneck.
 6. Whether the application remains stable under increased workload.
+7. At which workload the application begins to approach saturation.
+
+The results showed that throughput increased up to 300.41 req/s at 2,000 requests. At 3,000 and 5,000 requests, throughput remained close to 288 req/s while response time increased slightly.
 
 The results can be used to determine the approximate workload at which the current deployment begins to saturate.
 
@@ -344,6 +423,14 @@ Responsibilities:
 - Request performance information.
 - Return a combined student summary.
 
+Performance observation:
+
+- student-service showed the highest CPU utilization among the three services.
+- Average CPU utilization increased from 53.41% at 100 requests to 123.30% at 5,000 requests.
+- Peak CPU utilization reached 136.80% during the tested workloads.
+- Average memory increased from 27.40 MiB to 31.47 MiB.
+- The service is therefore the primary resource-consuming component in the tested deployment.
+
 ### Attendance Service
 
 attendance-service handles attendance-related information.
@@ -354,6 +441,13 @@ Responsibilities:
 - Return attendance information for a student.
 - Process requests independently from the other services.
 
+Performance observation:
+
+- Average CPU utilization increased from 0.01% at 100 requests to 29.71% at 5,000 requests.
+- Peak CPU utilization reached 34.05%.
+- Average memory remained close to 22 MiB throughout the workloads.
+- The service remained stable under all tested workloads.
+
 ### Performance Service
 
 performance-service handles academic performance information.
@@ -363,6 +457,13 @@ Responsibilities:
 - Provide health status.
 - Return performance information for a student.
 - Process performance requests independently.
+
+Performance observation:
+
+- Average CPU utilization increased from 0.01% at 100 requests to 30.02% at 5,000 requests.
+- Peak CPU utilization reached 33.68%.
+- Average memory remained close to 22 MiB throughout the workloads.
+- The service remained stable under all tested workloads.
 
 ## 16. Advantages of the Containerized Architecture
 
@@ -387,6 +488,8 @@ Responsibilities:
 6. Network latency between containers depends on the local Docker environment.
 7. Resource measurements can vary depending on background processes on the host machine.
 8. The experiment does not represent a multi-node Kubernetes deployment.
+9. The workload experiment uses a fixed concurrency of 16.
+10. The observed throughput represents the tested local Docker environment and hardware configuration.
 
 ## 18. Conclusion
 
@@ -406,6 +509,18 @@ The end-to-end API:
 
 was used to generate workloads and evaluate application performance.
 
+Five workload levels were tested:
+
+    100 requests
+    1000 requests
+    2000 requests
+    3000 requests
+    5000 requests
+
+All tests were executed with a fixed concurrency of 16.
+
+A total of 11,100 requests were processed with zero failures.
+
 Performance was analyzed using:
 
 - Response time
@@ -415,9 +530,15 @@ Performance was analyzed using:
 - Successful requests
 - Failed requests
 
+The highest measured throughput was 300.41 req/s at 2,000 requests, while the lowest measured average response time was 52.99 ms at the same workload.
+
+At higher workloads, throughput stabilized around 288 req/s, indicating that the current deployment was approaching its processing capacity.
+
+CPU utilization increased with workload, with student-service showing the highest resource consumption. Memory utilization increased gradually for student-service while remaining relatively stable for attendance-service and performance-service.
+
 The experiment demonstrates that a microservice architecture allows individual services to be independently developed, deployed, monitored, and scaled.
 
-Workload testing also helps identify performance bottlenecks and understand how the application behaves as concurrency increases.
+Workload testing also helps identify performance bottlenecks and understand how the application behaves as request volume increases.
 
 ---
 
@@ -471,7 +592,16 @@ Monitor resource utilization:
 
 Run workload testing:
 
+    cd workload
     python load_test.py
+
+The workload results are generated in:
+
+    workload/workload_results.csv
+
+The graphs are generated in:
+
+    workload/graphs/
 
 Stop the application:
 
@@ -542,12 +672,21 @@ Stop the application:
 - [x] Inter-service communication
 - [x] End-to-end student summary API
 - [x] Workload generation script
+- [x] Fixed concurrency workload testing
+- [x] 100-request workload test
+- [x] 1000-request workload test
+- [x] 2000-request workload test
+- [x] 3000-request workload test
+- [x] 5000-request workload test
+- [x] 11,100 total workload requests
 - [x] CPU monitoring
 - [x] Memory monitoring
+- [x] 0 failed requests
 - [x] Performance results
 - [x] Performance graphs
 - [x] Workload analysis
 - [x] Bottleneck analysis
 - [x] Scalability analysis
+- [x] Throughput saturation analysis
 - [x] Conclusion
 - [x] README documentation
