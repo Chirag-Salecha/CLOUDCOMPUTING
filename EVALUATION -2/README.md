@@ -12,11 +12,9 @@
 5. [Repository structure](#5-repository-structure)
 6. [Reproduce the implementation](#6-reproduce-the-implementation)
 7. [Experiments and recorded results](#7-experiments-and-recorded-results)
-8. [Screenshot evidence](#8-screenshot-evidence)
-9. [Verification and demo commands](#9-verification-and-demo-commands)
-10. [Troubleshooting](#10-troubleshooting)
-11. [Viva questions](#11-viva-questions)
-12. [Conclusion and references](#12-conclusion-and-references)
+8. [Verification and demo commands](#9-verification-and-demo-commands)
+9. [Troubleshooting](#10-troubleshooting)
+10. [Conclusion](#12-conclusion)
 
 ---
 
