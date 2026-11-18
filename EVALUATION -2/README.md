@@ -401,41 +401,7 @@ These are observations from the uploaded screenshots and the terminal outputs re
 
 The `blocked-web` name is retained even once it is no longer blocked; it is only a Deployment name, not a live status indicator.
 
-## 8. Screenshot evidence
 
-All eight images below are supplied experiment screenshots; **no terminal outputs have been fabricated or altered**.
-
-### 8.1 Three Ready nodes and SSD/HDD node labels
-
-![Cluster nodes and node labels](screenshots/01-cluster-and-node-labels.png)
-
-### 8.2 Required-affinity pods placed on the SSD node
-
-![Required node affinity placement](screenshots/02-required-affinity-pods.png)
-
-### 8.3 No matching label: pod remains Pending
-
-![Unmatched node affinity pending result](screenshots/03-unmatched-affinity-pending.png)
-
-### 8.4 Matching label added: scheduling starts on kind-worker2
-
-![Matching affinity label added and scheduling on worker 2](screenshots/04-affinity-label-added.png)
-
-### 8.5 Pending state reproduced after deleting the already-assigned pod
-
-![Pending replacement pod after label removal](screenshots/05-pending-after-pod-recreation.png)
-
-### 8.6 Final pod placement after scheduling recovery
-
-![Pod running on kind-worker2 after recovery](screenshots/06-scheduling-recovery-running.png)
-
-### 8.7 Required pods recreated, Service verified, port-forward initiated
-
-![Rescheduling and Kubernetes Service](screenshots/07-pod-rescheduling-and-service.png)
-
-### 8.8 Application opened successfully in browser
-
-![Nginx running in browser](screenshots/08-nginx-browser.png)
 
 ### Evidence notes
 
