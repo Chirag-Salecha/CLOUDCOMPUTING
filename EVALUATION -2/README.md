@@ -1,8 +1,5 @@
 # Pod Scheduling Using Node Affinity in Kubernetes
 
-**Cloud Computing Lab Evaluation – 2 | Problem Statement 02**  
-**KLE Technological University** · Department of Computer Science and Engineering (Artificial Intelligence)  
-**Course code:** 26ECAC301 · **Semester:** V · **Implementation date:** 18 November 2026
 
 > **Project outcome:** A three-node local Kubernetes cluster successfully schedules Nginx workloads using **required** and **preferred** node affinity. The experiments also demonstrate a pod remaining **Pending** when no node matches, recovery after a matching label is introduced, and automatic replacement of deleted pods on an eligible node.
 
