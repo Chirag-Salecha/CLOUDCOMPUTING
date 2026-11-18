@@ -497,89 +497,11 @@ For the best evaluator demo, show **node labels → required placement → Pendi
 | PowerShell shows `>>` / `Unexpected token` | Previous prompts/output pasted as commands | Press `Ctrl+C`; enter **only** one command, without `PS ...>` prefix. |
 | Namespace already exists | Lab has already created it | Reuse `affinity-demo` rather than recreating it. |
 
-### Optional cleanup
 
-Remove only this project's namespaced resources:
-
-```powershell
-kubectl delete -n affinity-demo -f manifests/required-affinity.yaml
-kubectl delete -n affinity-demo -f manifests/preferred-affinity.yaml
-kubectl delete -n affinity-demo -f manifests/unmatched-affinity.yaml
-```
-
-To also remove the demonstration-only node label (without changing SSD/HDD labels):
-
-```powershell
-kubectl label node kind-worker2 demo-affinity-
-```
-
-**Do not delete the entire pre-existing Kind cluster unless you intentionally want to remove other work stored there.**
-
-## 11. Viva questions
-
-**Q1. What is Kubernetes?**  
-A platform for deploying and managing containerized workloads, including scheduling, replication, and service discovery.
-
-**Q2. What is a pod?**  
-The smallest deployable unit in Kubernetes; in this lab each pod runs an Nginx container.
-
-**Q3. What does the Kubernetes scheduler do?**  
-It chooses a suitable node for a newly created, unscheduled pod by considering constraints and node scoring.
-
-**Q4. What is node affinity?**  
-Rules that influence node selection using node labels. Required rules filter eligible nodes; preferred rules influence ranking.
-
-**Q5. What is the difference between required and preferred affinity?**  
-Required is a hard condition; preferred is a weighted soft preference and can be overridden by other scheduling decisions.
-
-**Q6. Why does `required-web` run only on `kind-worker`?**  
-Its required rule matches `disktype=ssd`, and among our worker-labeled nodes only `kind-worker` has that value.
-
-**Q7. Why did `blocked-web` remain Pending?**  
-Its required `demo-affinity=restricted` condition had no matching eligible worker node when it was created.
-
-**Q8. What changed during scheduling recovery?**  
-Adding `demo-affinity=restricted` to `kind-worker2` made that worker eligible, allowing the Pending pod to be scheduled there.
-
-**Q9. What does `IgnoredDuringExecution` mean?**  
-Changing a node label does not cause the node-affinity rule alone to evict or migrate a pod that is already running.
-
-**Q10. Why were pods recreated when you deleted them?**  
-A Deployment continuously maintains its desired replica count and creates replacements for deleted pods.
-
-**Q11. Does preferred affinity always choose the SSD node?**  
-No. Both preferred replicas landed on SSD in this particular run, but the preference is not guaranteed.
-
-**Q12. What is the purpose of `pool=worker`?**  
-It is a separate `nodeSelector` condition keeping these demo workloads on worker-labeled nodes. The other affinity constraints are applied in addition.
-
-**Q13. What is the difference between a Service and port forwarding?**  
-A Service gives selected pods a stable in-cluster network endpoint. `kubectl port-forward` temporarily connects a local port to that application path for testing.
-
-**Q14. How is pod placement verified?**  
-`kubectl get pods -n affinity-demo -o wide` displays the node for each pod; node labels and pod events provide supporting evidence.
-
-**Q15. Is `disktype=ssd` a benchmark or a hardware detection?**  
-No. It is a manually applied label used to show Kubernetes scheduling behavior in a local Kind cluster.
-
-**Q16. Why is a new pod Pending but an old pod may remain Running after removing the label?**  
-The first needs a node assignment and fails required scheduling checks; the second was already bound and is unaffected by the affinity rule after scheduling.
-
-## 12. Conclusion and references
+## 12. Conclusion 
 
 The experiment meets the assigned lab's core requirements using a **three-node Kind Kubernetes cluster**. Required affinity constrained two Nginx replicas to the labeled SSD worker. Preferred affinity favored that same worker, and the scheduler placed both preferred replicas there during this run. An unmatched required rule produced a Pending pod; adding the matching label enabled scheduling on the second worker. Kubernetes also recreated deleted Deployment-managed pods while preserving their required placement constraints. Finally, the Nginx application was verified through a Kubernetes Service and port forwarding.
 
 **Scope:** This lab demonstrates scheduling policies and their observable outcomes. It does not measure real SSD/HDD performance or guarantee preferred-node placement under all load conditions.
 
-### Official documentation
 
-- [Kubernetes — Assign Pods to Nodes using Node Affinity](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/)
-- [Kubernetes — Assigning Pods to Nodes](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/)
-- [Kubernetes — Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
-- [Kubernetes — Services](https://kubernetes.io/docs/concepts/services-networking/service/)
-- [kubectl port-forward](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_port-forward/)
-- [Kind — Quick Start](https://kind.sigs.k8s.io/docs/user/quick-start/)
-
----
-
-*Prepared for Cloud Computing Lab Evaluation – 2, Problem Statement 02. Screenshots and reported results are based on the practical execution performed on 18 November 2026.*
