@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: blocked-web
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: blocked-web
+
+  template:
+    metadata:
+      labels:
+        app: blocked-web
+
+    spec:
+      nodeSelector:
+        pool: worker
+
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: demo-affinity
+                    operator: In
+                    values:
+                      - restricted
+
+      containers:
+        - name: nginx
+          image: nginx:stable-alpine
+
+          ports:
+            - containerPort: 80
+
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
